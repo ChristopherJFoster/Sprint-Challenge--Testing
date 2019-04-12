@@ -13,7 +13,7 @@ describe('/games', () => {
     it('res.body should an array of length one', async () => {
       await request(server)
         .post('/games')
-        .send({ title: 'Donkey Kong', genre: 'platformer' });
+        .send({ title: 'Donkey Kong', genre: 'arcade' });
       const res = await request(server).get('/games');
       expect(res.body).toHaveLength(1);
     });
@@ -28,37 +28,44 @@ describe('/games', () => {
     it('status code should be 201 Created', async () => {
       const res = await request(server)
         .post('/games')
-        .send({ title: 'Donkey Kong', genre: 'platformer' });
+        .send({ title: 'Pac-Man', genre: 'arcade' });
       expect(res.status).toBe(201);
     });
 
     it('res.type should be JSON', async () => {
       const res = await request(server)
         .post('/games')
-        .send({ title: 'Donkey Kong', genre: 'platformer' });
+        .send({ title: 'Dig Dug', genre: 'arcade' });
       expect(res.type).toBe('application/json');
     });
 
-    it("res.body should equal { title: 'Donkey Kong', genre: 'platformer' }", async () => {
+    it("res.body should equal { title: 'Defender', genre: 'arcade' }", async () => {
       const res = await request(server)
         .post('/games')
-        .send({ title: 'Donkey Kong', genre: 'platformer' });
-      expect(res.body).toEqual({ title: 'Donkey Kong', genre: 'platformer' });
+        .send({ title: 'Defender', genre: 'arcade' });
+      expect(res.body).toEqual({ title: 'Defender', genre: 'arcade' });
     });
 
     it('should add a game to games array if proper request is made', async () => {
-      let gamesCheck = await request(server).get('/games');
-      expect(gamesCheck.body).toHaveLength(4);
+      let games = await request(server).get('/games');
+      expect(games.body).toHaveLength(4);
       const res = await request(server)
         .post('/games')
-        .send({ title: 'Donkey Kong', genre: 'platformer' });
-      gamesCheck = await request(server).get('/games');
-      expect(gamesCheck.body).toHaveLength(5);
+        .send({ title: 'Frogger', genre: 'arcade' });
+      games = await request(server).get('/games');
+      expect(games.body).toHaveLength(5);
     });
 
     it('status code should be 422 if properties are missing', async () => {
       const res = await request(server).post('/games');
       expect(res.status).toBe(422);
+    });
+
+    it('status code should be 405 if title already exists in games db', async () => {
+      const res = await request(server)
+        .post('/games')
+        .send({ title: 'Donkey Kong', genre: 'arcade' });
+      expect(res.status).toBe(405);
     });
   });
 });

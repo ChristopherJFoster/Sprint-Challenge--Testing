@@ -15,8 +15,13 @@ server.post('/games', (req, res) => {
   if (!title || !genre) {
     res.status(422).json({ error: 'You must provide a title and genre.' });
   } else {
-    games.push(req.body);
-    res.status(201).json({ title, genre, releaseYear });
+    const uniqueCheck = games.filter(game => game.title === title);
+    if (uniqueCheck.length === 0) {
+      games.push(req.body);
+      res.status(201).json({ title, genre, releaseYear });
+    } else {
+      res.status(405).json({ error: 'Title must be unique.' });
+    }
   }
 });
 
