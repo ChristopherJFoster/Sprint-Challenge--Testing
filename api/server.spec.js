@@ -52,10 +52,15 @@ describe('/games', () => {
       expect(res.status).toBe(200);
     });
 
-    it('res.type should be an array', async () => {
+    it('res.body should be an array', async () => {
       const res = await request(server).get('/games');
-      // Probably the wrong syntax:
-      expect(res.type).toBe('array');
+      expect(Array.isArray(res.body)).toBe(true);
+    });
+
+    it('res.body should be an array even if there are no games', async () => {
+      games = [];
+      const res = await request(server).get('/games');
+      expect(Array.isArray(res.body)).toBe(true);
     });
 
     it('res.body should an array with one game object', async () => {
