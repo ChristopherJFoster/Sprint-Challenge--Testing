@@ -1,9 +1,3 @@
-let games = [
-  {
-    title: 'Pacman',
-    genre: 'Arcade',
-    releaseYear: 1980
-  }
-];
+let games = [];
 
 module.exports = games;

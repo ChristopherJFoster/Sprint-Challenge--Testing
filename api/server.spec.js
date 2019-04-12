@@ -2,15 +2,29 @@ const request = require('supertest');
 
 const server = require('./server');
 
-let games = require('../data/games');
-
 describe('/games', () => {
-  describe('POST /games', () => {
-    beforeEach(() => {
-      // equivalent of truncate()
-      games = [];
+  describe('GET /games', () => {
+    it('res.body should be an array even if there are no games', async () => {
+      const res = await request(server).get('/games');
+      expect(res.body).toHaveLength(0);
+      expect(Array.isArray(res.body)).toBe(true);
     });
 
+    it('res.body should an array of length one', async () => {
+      await request(server)
+        .post('/games')
+        .send({ title: 'Donkey Kong', genre: 'platformer' });
+      const res = await request(server).get('/games');
+      expect(res.body).toHaveLength(1);
+    });
+
+    it('status code should be 200 OK', async () => {
+      const res = await request(server).get('/games');
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe('POST /games', () => {
     it('status code should be 201 Created', async () => {
       const res = await request(server)
         .post('/games')
@@ -33,45 +47,18 @@ describe('/games', () => {
     });
 
     it('should add a game to games array if proper request is made', async () => {
-      expect(games).toHaveLength(0);
+      let gamesCheck = await request(server).get('/games');
+      expect(gamesCheck.body).toHaveLength(4);
       const res = await request(server)
         .post('/games')
         .send({ title: 'Donkey Kong', genre: 'platformer' });
-      expect(games).toHaveLength(1);
+      gamesCheck = await request(server).get('/games');
+      expect(gamesCheck.body).toHaveLength(5);
     });
 
     it('status code should be 422 if properties are missing', async () => {
       const res = await request(server).post('/games');
       expect(res.status).toBe(422);
-    });
-  });
-
-  describe('GET /games', () => {
-    it('status code should be 200 OK', async () => {
-      const res = await request(server).get('/games');
-      expect(res.status).toBe(200);
-    });
-
-    it('res.body should be an array', async () => {
-      const res = await request(server).get('/games');
-      expect(Array.isArray(res.body)).toBe(true);
-    });
-
-    it('res.body should be an array even if there are no games', async () => {
-      games = [];
-      const res = await request(server).get('/games');
-      expect(Array.isArray(res.body)).toBe(true);
-    });
-
-    it('res.body should an array with one game object', async () => {
-      const res = await request(server).get('/games');
-      expect(res.body).toEqual([
-        {
-          title: 'Pacman',
-          genre: 'Arcade',
-          releaseYear: 1980
-        }
-      ]);
     });
   });
 });
