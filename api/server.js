@@ -1,6 +1,6 @@
 const express = require('express');
 
-const Games = require('../models/gamesModel');
+const db = require('../data/games');
 
 const server = express();
 
