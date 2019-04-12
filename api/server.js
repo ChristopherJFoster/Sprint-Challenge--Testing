@@ -25,4 +25,9 @@ server.post('/games', (req, res) => {
   }
 });
 
+server.get('/games-db-reset', (req, res) => {
+  games = [];
+  res.status(200).json({ message: 'Congrats - you erased the database!' });
+});
+
 module.exports = server;
