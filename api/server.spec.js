@@ -5,12 +5,12 @@ const server = require('./server');
 let games = require('../data/games');
 
 describe('/games', () => {
-  beforeEach(() => {
-    // equivalent of truncate()
-    games = [];
-  });
-
   describe('POST /games', () => {
+    beforeEach(() => {
+      // equivalent of truncate()
+      games = [];
+    });
+
     it('status code should be 201 Created', async () => {
       const res = await request(server)
         .post('/games')
@@ -40,9 +40,33 @@ describe('/games', () => {
       expect(games).toHaveLength(1);
     });
 
-    it('status code should be 400 if properties are missing', async () => {
+    it('status code should be 422 if properties are missing', async () => {
       const res = await request(server).post('/games');
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(422);
+    });
+  });
+
+  describe('GET /games', () => {
+    it('status code should be 200 OK', async () => {
+      const res = await request(server).get('/games');
+      expect(res.status).toBe(200);
+    });
+
+    it('res.type should be an array', async () => {
+      const res = await request(server).get('/games');
+      // Probably the wrong syntax:
+      expect(res.type).toBe('array');
+    });
+
+    it('res.body should an array with one game object', async () => {
+      const res = await request(server).get('/games');
+      expect(res.body).toEqual([
+        {
+          title: 'Pacman',
+          genre: 'Arcade',
+          releaseYear: 1980
+        }
+      ]);
     });
   });
 });

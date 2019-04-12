@@ -1,15 +1,9 @@
 let games = [
   {
-    title: 'Pacman', // required
-    genre: 'Arcade', // required
-    releaseYear: 1980 // not required
+    title: 'Pacman',
+    genre: 'Arcade',
+    releaseYear: 1980
   }
 ];
 
 module.exports = games;
-
-// {
-//   title: 'Pacman', // required
-//   genre: 'Arcade', // required
-//   releaseYear: 1980 // not required
-// }
